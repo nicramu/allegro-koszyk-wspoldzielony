@@ -1,0 +1,55 @@
+<head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <meta name="color-scheme" content="">
+</head>
+<div id="share-cart-addon-div">
+    <button type="button" id="share-cart-addon-button">
+        <i class="material-icons">sync_disabled</i>
+        Udostępnij koszyk
+        <img src="" alt="Udostępnij koszyk" />
+    </button>
+
+    <button type="button" id="share-cart-addon-button-load">
+        Importuj koszyk
+        <img src="" alt="Importuj koszyk" />
+    </button>
+
+    <div id="share-cart-loader" hidden>
+        <div class="spinner"></div>
+    </div>
+
+
+    <div hidden id="share-cart-addon-panel">
+        <div id="controls">
+            <label id="theme-switch">
+                <i class="material-icons">dark_mode</i>
+                <input type="checkbox">
+            </label>
+            <a id="close"><i class="material-icons">close</i></a>
+        </div>
+
+
+        <div id="info">
+            <label style="display: flex;">Twoje id:&nbsp;
+                <input value="" id="userId" type="text" readonly />
+                &nbsp;
+                <button id="copyUserId">kopiuj</button>
+            </label>
+            Możesz mieć zapisane max. 5 koszyków. Dodanie 6. spowoduje nadpisanie najstarszego. Osoba, która wklei Twoje
+            id, będzie widzieć Twoje koszyki.<br>
+            <label for="koszyk">Wybierz id:</label>
+
+            <select name="koszyk" id="koszyk" style="width: 32ch;">
+            </select>
+            <input type="button" id="removeUserIdButton" value="usuń">
+            <br>
+            <label for="addUserId">Wklej id (dodaj przyjazną nazwę po spacji):</label>
+            <input type="text" id="addUserId" name="addUserId" size="28" placeholder="AbCd1234 Nazwa">
+            <input type="submit" id="addUserIdSubmit" value="dodaj">
+        </div>
+
+        <div id="koszyki">
+
+        </div>
+    </div>
+</div>
