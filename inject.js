@@ -123,6 +123,7 @@ injectPageScript();
   });
 
   buttonImport.addEventListener("click", async () => {
+
     setLoading(true)
     document.querySelector("#share-cart-addon-panel div#koszyki").innerHTML = "";
 
@@ -344,6 +345,7 @@ async function signIn() {
   const { idToken, localId, refreshToken } = authData;
 
   const displayNamePart = await genName()
+
   const n = await getKoszykiCount(idToken) + 1
   const displayName = displayNamePart + '-' + n
   const userData = { localId, idToken, refreshToken, displayName };
@@ -630,16 +632,12 @@ function setLoading(isLoading) {
   loader.hidden = !isLoading;
 }
 
-
 async function genName() {
-  const friendlyName = await new Promise((resolve, reject) => {
-    chrome.runtime.sendMessage({ action: "fetch" }, (response) => {
-      if (chrome.runtime.lastError) {
-        reject(chrome.runtime.lastError.message);
-      } else {
-        resolve(response);
-      }
-    });
-  });
-  return friendlyName
+  try {
+    const friendlyName = await chrome.runtime.sendMessage({ action: "fetch" });
+    return friendlyName;
+  } catch (err) {
+    console.error("genName failed:", err);
+    return "guest";
+  }
 }

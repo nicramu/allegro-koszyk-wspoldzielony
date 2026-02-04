@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Koszyk współdzielony Allegro",
-  "version": "1.7",
+  "version": "1.8",
   "description": "Dziel się przedmiotami w koszyku Allegro ze znajomymi.",
   "browser_specific_settings": {
     "gecko": {
@@ -16,9 +16,8 @@
     "https://pl.wiktionary.org/*"
   ],
   "background": {
-    "scripts": [
-      "background.js"
-    ]
+    "service_worker":"background.js",
+    "scripts":["background.js"]
   },
   "web_accessible_resources": [
     {

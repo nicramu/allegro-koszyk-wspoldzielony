@@ -1,15 +1,12 @@
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message.action === "fetch") {
-        generateName().then((name) => {
-            sendResponse(name); // Send the result back
-        }).catch((err) => {
-            console.error("Failed to generate name:", err);
-            sendResponse({ error: err.message });
-        });
-
-        return true; // <-- 🔥 This is required to keep `sendResponse` alive asynchronously
-    }
+  if (message.action === "fetch") {
+    generateName()
+      .then(name => sendResponse(name))
+      .catch(err => sendResponse({ error: err.message }));
+    return true; // 🔥 Keeps sendResponse alive asynchronously
+  }
 });
+
 
 async function generateName() {
     // let adverb = await getAdverb()
@@ -21,6 +18,7 @@ async function generateName() {
     }
     let result = [adjective.replaceAll("_", "-"), noun.noun.replaceAll("_", "-")]
     // console.log("name generated", result.join("-"))
+
     return result = result.join("-").toLowerCase()
 }
 
