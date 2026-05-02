@@ -1,20 +1,42 @@
 let isDarkModeEnabled;
 let cart;
-const apiKey = '';
-const projectId = '';
+let pageScriptInjected = false;
+const apiKey = 'AIzaSyCOEZineqn9PRsFg7qLu0HgPvy6jhRt3FA';
+const projectId = 'allegro-koszyk-extension';
 
-function waitForCartUpdate(previousTotal, retries = 10, delay = 300) {
+function waitForCartUpdate(previousTotal, retries = 10, delay = 1000) {
   return new Promise((resolve) => {
-    const check = () => {
-      if (retries <= 0) return resolve(false);
-      injectPageScript();
+    let timeoutId;
 
-      setTimeout(() => {
-        if (cart?.prices?.total?.amount !== previousTotal) return resolve(true);
-        check(--retries);
-      }, delay);
+    const handler = (event) => {
+      const cart = event.detail?.cart;
+      const total = cart?.prices?.total?.amount;
+
+      if (total !== previousTotal) {
+        cleanup();
+        resolve(true);
+      }
     };
-    check();
+
+    const cleanup = () => {
+      window.removeEventListener("opboxData", handler);
+      clearTimeout(timeoutId);
+    };
+
+    window.addEventListener("opboxData", handler);
+
+    const retry = (i) => {
+      if (i <= 0) {
+        cleanup();
+        return resolve(false);
+      }
+
+      window.dispatchEvent(new CustomEvent("getCart"));
+
+      timeoutId = setTimeout(() => retry(i - 1), delay);
+    };
+
+    retry(retries);
   });
 }
 
@@ -22,10 +44,13 @@ document.addEventListener('click', async (event) => {
   const panel = document.querySelector("#share-cart-addon-panel");
   if (panel.contains(event.target)) return;
 
+  const button = document.querySelector("#share-cart-addon-button");
+  const button2 = document.querySelector("#share-cart-addon-button-load");
+  if (button.contains(event.target)) return;
+  if (button2.contains(event.target)) return;
+
   const target = event.target.closest('button[data-cy="number-picker.increase"], button[data-cy="number-picker.decrease"], input[type="checkbox"],button');
   if (!target) return;
-
-  const button = document.querySelector("#share-cart-addon-button");
 
 
   panel.hidden = true;
@@ -61,6 +86,8 @@ window.addEventListener("opboxData", (event) => {
 });
 
 function injectPageScript() {
+  if (pageScriptInjected) return;
+  pageScriptInjected = true;
   const script = document.createElement('script');
   script.src = chrome.runtime.getURL('pageScript.js');
   script.onload = () => script.remove();
